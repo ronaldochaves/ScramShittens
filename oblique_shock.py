@@ -1,53 +1,60 @@
-# Standard imports
-# import math
-
-# PyPI imports
 from numpy import sin, cos, tan, sqrt, pi
-from scipy.optimize import root
 
-# Globals
+from beta_theta_mach import theta_mach_2_beta, get_beta_from_theta_mach
+
 deg2rad = pi / 180
 
 
 def oblique_shock(theta, mach_before, pressure_before, temperature_before, gamma):
-    beta_initial_guess = 10 * deg2rad
-    beta_1 = root(theta_mach_2_beta, beta_initial_guess, args=(theta, mach_before, gamma)).x[0]
-    mach_after = (1 / sin(beta_1 - theta)) * sqrt((1 + ((gamma - 1) / 2) * (mach_before * sin(beta_1)) ** 2) /
-                                                  (gamma * (mach_before * sin(beta_1)) ** 2 - (gamma - 1) / 2))
-    pressure_after = pressure_before * (1 + (2 * gamma / (gamma + 1)) * ((mach_before * sin(beta_1)) ** 2 - 1))
+    beta = get_beta_from_theta_mach(theta, mach_before, gamma)
+    mach_after = get_mach_after_oblique_shock(mach_before, theta, beta, gamma)
+    pressure_after = get_pressure_after_oblique_shock(mach_before, pressure_before, beta, gamma)
+    temperature_after = get_temperature_after_oblique_shock(mach_before, pressure_before, beta, gamma, temperature_before)
+    return mach_after, pressure_after, temperature_after, beta
+
+
+def get_pressure_after_oblique_shock(mach_before, pressure_before, beta, gamma):
+    pressure_after = pressure_before * \
+        (1 + (2 * gamma / (gamma + 1)) * ((mach_before * sin(beta)) ** 2 - 1))
+    return pressure_after
+
+
+def get_temperature_after_oblique_shock(mach_before, pressure_before, beta, gamma, temperature_before):
+    pressure_after = get_pressure_after_oblique_shock(mach_before, pressure_before, beta, gamma)
     temperature_after = temperature_before * (pressure_after / pressure_before) * \
-                        ((2 + (gamma - 1) * (mach_before * sin(beta_1)) ** 2) /
-                         ((gamma + 1) * (mach_before * sin(beta_1)) ** 2))
-    return mach_after, pressure_after, temperature_after, beta_1
+        ((2 + (gamma - 1) * (mach_before * sin(beta)) ** 2) /
+         ((gamma + 1) * (mach_before * sin(beta)) ** 2))
+    return temperature_after
 
 
-def theta_mach_2_beta(beta, theta, mach, gamma):
-    res = 2 * (1 / tan(beta)) * ((mach * sin(beta)) ** 2 - 1) / ((mach ** 2) * (gamma + cos(2 * beta)) + 2) - theta
-    return res
+def get_mach_after_oblique_shock(mach_before, theta, beta, gamma):
+    mach_after = (1 / sin(beta - theta)) * sqrt((1 + ((gamma - 1) / 2) * (mach_before * sin(beta)) ** 2) /
+                                                (gamma * (mach_before * sin(beta)) ** 2 - (gamma - 1) / 2))
+    return mach_after
 
 
-def main(mach, theta, alt):
-    t = 227
-    p = 1172
+def main(theta, mach, alt):
+    temperature = 227
+    pressure = 1172
     gamma = 1.4
 
-    mach_2, p_2, t_2, beta_1 = oblique_shock(theta, mach, p, t, gamma)
+    mach_2, p_2, t_2, beta = oblique_shock(theta, mach, pressure, temperature, gamma)
 
     print('Before oblique shock wave')
     print('mach: %.3f' % mach)
-    print('pres: %.3f kPa' % (p / 1e3))
-    print('temp: %.3f K' % t)
     print('theta: %.3f deg' % (theta / deg2rad))
+    print('pres: %.3f kPa' % (pressure / 1e3))
+    print('temp: %.3f K' % temperature)
     print('')
     print('After oblique shock wave')
+    print('beta: %.3f deg' % (beta / deg2rad))
     print('mach: %.3f' % mach_2)
     print('pres: %.3f kPa' % (p_2 / 1e3))
     print('temp: %.3f K' % t_2)
-    print('beta: %.3f deg' % (beta_1 / deg2rad))
 
 
 if __name__ == '__main__':
     mach_1 = 10
     theta = 5 * deg2rad
     alt = 30000
-    main(mach_1, theta, alt)
+    main(theta, mach_1, alt)
