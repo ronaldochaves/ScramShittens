@@ -4,7 +4,7 @@ from numpy import sqrt, exp, sin, pi, arange, array, savetxt
 import matplotlib.pyplot as plt
 import export_data
 
-outfile_path = '/Users/roncha/Master Degree/Paulo Toro/Projeto 1/A CEN Ronaldo Chaves Reis (Projeto 1).csv'
+outfile_path = '../outfile.csv'
 
 # Earth atmosphere layers
 layers = ['Troposphere', 'Tropopause', 'Stratosphere1',
@@ -201,7 +201,7 @@ def main():
 if __name__ == '__main__':
     atmosphere_setup()
 
-    print('*** BIZU SPACE ISA CALCULATOR ***')
+    print('*** ISA CALCULATOR ***')
     h = float(input('Enter altitude [m]: '))
 
     layer = get_layer(h)
