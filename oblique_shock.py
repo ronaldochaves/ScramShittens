@@ -1,12 +1,13 @@
 from numpy import sin, cos, tan, sqrt, pi
 
-from beta_theta_mach import theta_mach_2_beta, get_beta_from_theta_mach
+from beta_theta_mach import get_beta_from_theta_mach
 
 deg2rad = pi / 180
 
 
 def oblique_shock(theta, mach_before, pressure_before, temperature_before, gamma):
-    beta = get_beta_from_theta_mach(theta, mach_before, gamma)
+    beta_guess = 10 * deg2rad
+    beta = get_beta_from_theta_mach(beta_guess, theta, mach_before, gamma)
     mach_after = get_mach_after_oblique_shock(mach_before, theta, beta, gamma)
     pressure_after = get_pressure_after_oblique_shock(mach_before, pressure_before, beta, gamma)
     temperature_after = get_temperature_after_oblique_shock(mach_before, pressure_before, beta, gamma, temperature_before)

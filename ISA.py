@@ -2,7 +2,7 @@
 
 from numpy import sqrt, exp, sin, pi, arange, array, savetxt
 import matplotlib.pyplot as plt
-import export_data
+# import export_data
 
 outfile_path = '../outfile.csv'
 
@@ -157,7 +157,7 @@ def main():
     data_dict = {}
     for label, datum in zip(labels, data):
         data_dict[label] = datum
-    export_data.as_dict(data_dict, outfile_path)
+    # export_data.as_dict(data_dict, outfile_path)
 
     fig = plt.figure('sound_speeds', dpi=80)
     plt.plot(sound_speeds, altitudes * 1e-3, 'r-', linewidth=2, label='ISA sound speed')
