@@ -24,7 +24,7 @@ def get_pressure_after_from_total_before(mach_after, gamma, pressure_total_befor
 	return pressure_after
 
 
-def main(args):
+def expansion(args):
 	[mach_before, mach_after, pressure_before, gamma] = args
 	mu_before = expansion_wave_angle(mach_before)
 	nu_before = pradtl_meyer(mach_before, gamma)
@@ -32,8 +32,11 @@ def main(args):
 	mu_after = expansion_wave_angle(mach_after)
 	pressure_total_before = total_pressure(mach_before, gamma, pressure_before)
 	pressure_after = get_pressure_after_from_total_before(mach_after, gamma, pressure_total_before)
+	return pressure_after, mu_before, mu_after
 
-	print('mach_after: %.3f' % mach_after)
+
+def main(args):
+	pressure_after, mu_before, mu_after = expansion(args)
 	print('pressure_after: %.3f kPa' % (pressure_after / 1e3))
 	print('mu_after: %.3f deg' % (mu_after / deg2rad))
 

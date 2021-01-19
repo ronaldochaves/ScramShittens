@@ -81,4 +81,4 @@ if __name__ == '__main__':
     args = [9.5 * deg2rad, 5 * deg2rad, 10, gamma]
     # args = [9.5, 5, 10, gamma]
     main(args)
-    # plot_beta_theta_mach()
+    plot_beta_theta_mach()
